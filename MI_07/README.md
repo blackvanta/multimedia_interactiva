@@ -6,6 +6,8 @@ A Vertex Shader's job is to generate clipspace coordinates. It always takes the 
 
 `
 void main() {
+
    gl_Position = doMathToMakeClipspaceCoordinates
+   
 }
 `
