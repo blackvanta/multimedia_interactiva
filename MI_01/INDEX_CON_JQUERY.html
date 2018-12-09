@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+	<style type="text/css">
+		button{
+		    background: #fafafa;
+		    border: 1px solid #e6e6e6;
+		    padding: 7px 15px;
+		    font-size: 1.2em;
+		    font-weight: lighter;
+		    text-transform: uppercase;
+		    margin: 15px;
+		}
+		label{
+		    margin: 15px;
+			font-size: 2.2em;
+    		font-family: "arial", sans-serif;
+    		color: #6d6e71;
+
+		}
+	</style>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#btn_crear").click((e) => {
+				//console.log(this)
+				//console.log(e)
+				//console.log(e.target)
+				
+				$("label").text("etiqueta").css("color", "blue")
+				$(".labels").text("clase").css("color", "red")
+				$("#lbl_text").text("id").css("color", "cyan")
+				$("[precio = 1]").text("precio: $1.0").css("color", "green")
+				$("[precio = 2]").text("precio: $2.0").css("color", "purple")
+
+				
+			})
+		})
+	</script>
+	<title></title>
+</head>
+<body>
+	<label id="lbl_text" class="labels">Texto</label> <br>
+	<label class="labels">Texto</label> <br>
+	<label class="labels">Texto</label> <br>
+
+	<label>Texto</label> <br>
+	
+	<label precio="1">Texto</label> <br>
+	<label precio="2">Texto</label> <br>
+	<label precio="2">Texto</label> <br>
+	<label precio="1">Texto</label> <br>
+
+
+	<button id="btn_crear" class="btn">Crear</button>
+</body>
+</html>

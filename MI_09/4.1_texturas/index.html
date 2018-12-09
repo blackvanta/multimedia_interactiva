@@ -1,0 +1,93 @@
+
+<html>
+<head>
+	<title>4.1 Texturas</title>	
+	<script type="text/javascript" src="js/libs/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="js/libs/gl-matrix.js"></script>	
+	<script type="text/javascript" src="js/libs/webgl-utils.js"></script>
+	<script type="text/javascript" src="js/models/webglconfig.js"></script>
+	<script type="text/javascript" src="js/models/object3d.js"></script>
+	
+	<script id="shader-vs" type="x-shader/x-vertex">
+	    attribute vec3 aVertexPosition;
+	    attribute vec4 aVertexColor;
+		// Coordenadas de textura
+	    // ..
+
+	    uniform mat4 uMVMatrix;
+	    uniform mat4 uPMatrix;
+
+	    varying lowp vec4 vColor;
+	    
+	    // Coordenadas de textura para el fragmentShader
+	   	// ..
+
+	    void main(void) {
+	        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+	        vColor = aVertexColor;
+	        // ..
+	    }
+	</script>
+	<script id="shader-fs" type="x-shader/x-fragment">
+	    precision highp float;    
+
+		// Representa a nuestra textura 2D    
+	    // .. 
+
+	    // Coordenadas de textura
+	   	// ..
+
+	    varying lowp vec4 vColor;	 
+
+	    void main(void) {
+	    	// texture2D: regresa un texel (El valor del "color" de la textura en las coordenadas dadas)
+	    	vec4 texelColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+	      
+        	// Ahora aplicamos el texel por el color por el "peso" de la iluminacion
+        	// y le aplicamos el canal alpha del texel
+            gl_FragColor = vec4(texelColor.rgb * vColor.rgb, texelColor.a);
+	    }
+	</script>
+	<script type="text/javascript">
+		var webGlConfig = null;
+		var cube = null;
+		$(document).ready(function() {
+			webGlConfig = new WebGLConfig($("#webgl-canvas")[0]);
+			
+			cube = Object3D.createCubeWithTexture(webGlConfig.gl, webGlConfig.shaderProgram);
+			//cube.setColor({ r:0.5, g:0.0, b:0.0, a:1.0 });
+			cube.xDirection = 1;		
+			tick(0);
+		});
+
+		var deltaTime = 0;
+		var lastUpdateTime = 0;
+		function tick(time) {
+			time *= .001;
+			deltaTime = time - lastUpdateTime;
+			lastUpdateTime = time;
+			drawScene();
+			requestAnimFrame(tick);
+		}
+
+		function drawScene() {
+			webGlConfig.clear();
+
+			if (cube.position.x > 2)
+				cube.xDirection = -1;
+			else if (cube.position.x < -2)
+				cube.xDirection = 1;
+			
+			//cube.rotation.x += 100 * deltaTime;
+			//cube.rotation.y += 100 * deltaTime;
+			//cube.position.x += 5 * cube.xDirection * deltaTime
+			cube.draw();
+		}
+		
+	</script>
+
+</head>
+<body>
+	<canvas id="webgl-canvas" width="800" height="600">Navegador no compatible!</canvas>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<html>
+<head>
+	<title>2.1 Movimiento de camara</title>
+	<script type="text/javascript" src="js/libs/jquery/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="js/libs/three/three.js"></script>
+	<script type="text/javascript">
+
+	var scene;
+	var camera;
+	var renderer;
+	var controls;
+	var objects = [];
+	var clock;
+	var deltaTime;	
+	var keys = {};
+	var cube;
+	$(document).ready(function() {
+		setupScene();
+		document.addEventListener('keydown', onKeyDown);
+		document.addEventListener('keyup', onKeyUp);
+
+		render();
+	});
+
+	function onKeyDown(event) {
+		keys[String.fromCharCode(event.keyCode)] = true;
+	}
+	function onKeyUp(event) {
+		keys[String.fromCharCode(event.keyCode)] = false;
+	}
+
+	
+	function render() {
+		requestAnimationFrame(render);
+		deltaTime = clock.getDelta();	
+
+		var yaw = 0;
+		var forward = 0;
+		if (keys["A"]) {
+			yaw = 5;
+		} else if (keys["D"]) {
+			yaw = -5;
+		}
+		if (keys["W"]) {
+			forward = -15;
+		} else if (keys["S"]) {
+			forward = 15;
+		}
+
+		//camera.rotation.y += yaw * deltaTime;
+		//camera.translateZ(forward*deltaTime)
+
+
+		cube.rotation.y += yaw * deltaTime;
+		cube.translateZ(forward*deltaTime)
+		//camera.lookAt(cube.position)
+		
+
+		renderer.render(scene, camera);
+	}
+
+	function setupScene() {		
+		var visibleSize = { width: window.innerWidth, height: window.innerHeight};
+		clock = new THREE.Clock();		
+		scene = new THREE.Scene();
+		camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 100);
+		camera.position.z = 2;
+		camera.position.y = 2;
+
+		renderer = new THREE.WebGLRenderer( {precision: "mediump" } );
+		renderer.setClearColor(new THREE.Color(0, 0, 0));
+		renderer.setPixelRatio(visibleSize.width / visibleSize.height);
+		renderer.setSize(visibleSize.width, visibleSize.height);
+
+		var ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1.0);
+		scene.add(ambientLight);
+
+		var directionalLight = new THREE.DirectionalLight(new THREE.Color(1, 1, 0), 0.4);
+		directionalLight.position.set(0, 0, 1);
+		scene.add(directionalLight);
+
+		var grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
+		grid.position.y = -1;
+		scene.add(grid);
+
+		var material = new THREE.MeshLambertMaterial({color: new THREE.Color(0.5, 0.0, 0.0)});
+		var geometry = new THREE.BoxGeometry(1, 1, 1);
+		cube = new THREE.Mesh(geometry, material)
+		cube.position.y = 2;
+		scene.add(cube);
+
+
+
+camera.position.y = 1
+		cube.add(camera)
+
+		$("#scene-section").append(renderer.domElement);
+	}
+
+
+	</script>
+</head>
+
+<body>
+
+	<div id="scene-section"/>
+
+</body>
+</html>

@@ -1,0 +1,132 @@
+<html>
+
+<head>
+    <title>1.2 Grupos y Clock</title>
+    <script type="text/javascript" src="js/libs/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/libs/three/three.js"></script>
+    <script type="text/javascript">
+
+        //La escena contendra todos los objetos que apareceran en el render.
+        var scene;
+        //
+        var camera;
+        //Todo los objetos que esten en la escena los dibujara el render.
+        var renderer;
+        //Tiempo delta
+        var deltaTime;
+        var clock;
+
+        $(document).ready(function () {
+            clock = new THREE.Clock();
+
+            var visibleSize = { width: window.innerWidth, height: window.innerHeight };
+
+
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(
+                75,
+                visibleSize.width / visibleSize.height,
+                0.1,
+                100
+            );
+            //Transformaciones
+            camera.position.z = 2;
+            //camera.position.set(x,y,z);
+            
+            //Inicializar el render
+            renderer = new THREE.WebGLRenderer({ precision: "mediump" });
+            renderer.setClearColor(new THREE.Color(0, 0, 0));
+            renderer.setPixelRatio(visibleSize.width / visibleSize.height);
+            renderer.setSize(visibleSize.width, visibleSize.height);
+
+
+            //Luz ambiental
+            var ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 0.8);
+            //Cuando quieres agregarlo a la escena se usa el comando de abajo --- Importante
+            scene.add(ambientLight);
+            //Luz direccional
+            var directionalLight = new THREE.DirectionalLight(new THREE.Color(.3, .1, .3), 0.4);
+            directionalLight.position.set(0.4, 0, 1);
+
+            
+            var directionalLight2 = directionalLight.clone();
+            directionalLight2.position.set(-0.4, 0, 1);
+
+
+            scene.add(directionalLight);
+            scene.add(directionalLight2);
+            
+            //Se agrega el canvas al HTML
+            $("#scene-section").append(renderer.domElement);
+
+
+            //Geometria
+            var geometry = new THREE.BoxGeometry(1,1,1);
+
+            //Textura
+
+            var material = new THREE.MeshPhongMaterial({
+                color : new THREE.Color(0.6,0.2,0.2),
+                
+                specular : new THREE.Color(1.0,1.0,1.0),
+
+                shininess : 500
+            });
+
+            //Lambert es un material no brilloso
+            //var material = new THREE.MeshLambertMaterial();
+            //Este material ignora la luz
+            //var material = new THREE.MeshBasicMaterial();
+
+
+            //Mesh
+            var cube1 = new THREE.Mesh(geometry,material);
+            cube1.position.set(-1.0,0.0,-2.0);
+            cube1.rotation.set(0.0,0.5,0.0);
+            
+            //Cubo 2
+            var cube2 = cube1.clone();
+            cube2.position.set(1.0,0.0,-2.0);
+
+			//Set name
+            cube1.name = 'cube1';
+            cube2.name = 'cube2';
+
+			/* this would set an invisible object parent of cube 2*/
+        	invisible = new THREE.Object3D();
+            invisible.position.set(-1.0,0.0,-2.0);
+        	invisible.name = 'invisible';
+        	
+
+            //Cubo 1
+            scene.add(cube1);
+            scene.add(invisible)
+            invisible.add(cube2);
+
+            render();
+        });
+        function render() {
+            requestAnimationFrame(render);
+
+        	deltaTime = clock.getDelta();
+            var cube1 = scene.getObjectByName('cube1');
+            var cube2 = scene.getObjectByName('cube2');
+            var invisible = scene.getObjectByName('invisible');
+
+            cube1.rotation.y += THREE.Math.degToRad(10 * deltaTime);
+            invisible.rotation.y += THREE.Math.degToRad(10 * deltaTime)
+            cube2.rotation.y -= THREE.Math.degToRad(180 * deltaTime);
+
+            renderer.render(scene, camera);
+        }
+    </script>
+</head>
+
+<body>
+
+    <div id="scene-section" />
+
+</body>
+
+</html>

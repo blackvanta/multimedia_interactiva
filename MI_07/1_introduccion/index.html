@@ -1,0 +1,237 @@
+<html>
+
+<head>
+	<title>1.1 Introduccion</title>
+
+	<script type="text/javascript" src="js/libs/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="js/libs/gl-matrix.js"></script>
+	<script type="text/javascript" src="js/libs/shader-utility.js"></script>
+
+	<script id="shader-vs" type="x-shader/x-vertex">
+		// movimientos y posiciones de vertices
+
+		// posicion de los vertices
+		attribute vec3 aVertexPosition; 
+
+		//Movel-View Matrix para las transformaciones
+		uniform mat4 uMVMatrix;
+
+		uniform mat4 uPMatrix;
+
+		void main (void){
+			gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+			vec4(aVertexPosition, 1.0);
+		}
+	</script>
+
+	<!-- 
+
+		Clasificacion de variables en el shader GLGS
+
+		1. Attribute : se relacionan con la cantidad de vertices
+		2. Uniform : son variables que se van a mantener igual para todos los vertices
+		3. Varying : 
+
+	 -->
+
+	<script id="shader-fs" type="x-shader/x-fragment">
+		// todo lo visual 
+
+		void main(void){
+			gl_FragColor = vec4(1.0,1.0,1.0,1.0);
+		}
+
+	</script>
+
+	<script type="text/javascript">
+		// Variables
+		var gl;
+		var shaderProgram;
+
+		$(document).ready(function () {
+
+			// Paso #1
+			// Obtener el contexto de WebGL
+			// (Obtener la api de webgl)
+			try {
+
+				var canvas = $("#webgl-canvas")[0];
+				gl = canvas.getContext('webgl');
+				gl.viewportWidth = canvas.width;
+				gl.viewportHeight = canvas.height;
+
+				gl.clearColor(0.0, 0.0, 0.0, 1.0);
+				gl.enable(gl.DEPTH_TEST);
+
+
+			} catch (e) {
+				alert("Navegador no compatible con WebGL");
+				return true;
+			}
+
+			// PASO #2
+			// Compilar los shaders y asignarselos a webgl
+			var vertexShader = getShader(gl, $("#shader-vs")[0]);
+			var fragmentShader = getShader(gl, $("#shader-fs")[0]);
+
+			// Creamos el programa del shader
+			shaderProgram = gl.createProgram();
+
+			gl.attachShader(shaderProgram, vertexShader);
+			gl.attachShader(shaderProgram, fragmentShader);
+			gl.linkProgram(shaderProgram);
+
+			// Validamos que no exista algun error
+			// al inicializar el Shader Program
+			if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+				alert("Error con el ShaderProgram!");
+				return false;
+			}
+
+			gl.useProgram(shaderProgram);
+
+			draw();
+
+		});
+
+		function draw() {
+
+			// Paso #3
+			// Preparar todo para dibujar
+			// (Vertices, colores, transformaciones, etc...)
+			
+			var cantidadPuntos = 8;
+			var grados = 360 / cantidadPuntos;
+			var gradosCont = 0;
+			var radio = 3;	
+
+			var vertices = [];
+			for(var i = 0; 0 < cantidadPuntos; i++ ){
+				var x = Math.cos((Math.PI / 180) * gradosCont) * radio;
+				var y = Math.sin((Math.PI / 180) * gradosCont) * radio;
+				var z = 0;
+				
+				vertices.push(x);
+				vertices.push(y);
+				vertices.push(z);
+
+				if(i % 2 == 0) {
+					vertices.push(0)
+					vertices.push(0)
+					vertices.push(0)
+				}
+
+				if(i == cantidadPuntos -1) {
+					vertices.push(vertices[0]);
+					vertices.push(vertices[1]);
+					vertices.push(vertices[2]);
+
+				}
+
+				gradosCont += grados;
+				
+			}
+
+
+			// CREAMOS EL BUFFER
+			//espacio de memoria para guardar informacion
+			var vertexBuffer = gl.createBuffer();
+
+			// ACTIVAMOS EL BUFFER
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer); //type of buffer, buffer
+
+			// Guardar los vertices en el ultimo buffer activado
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW); //type, vertex, mode of buffer
+
+
+			// Creamos variables de ayuda que nos serviran para
+			// saber cuantos vertices hay en el arreglo y cada cuantos elementos
+			// del arreglo se consideran un vertice (x, y, z, x, y, z) = 2 vertices, 6 elementos
+			vertexBuffer.itemSize = 3;
+			vertexBuffer.numItems = vertices.length / vertexBuffer.itemSize;
+
+
+			// Configurar viewport y "limpiar" pantalla
+			gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+			gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); //limpia esa parte
+
+
+			// Recordar que todo lo de matrices y vectores
+			// viene de la libreria GLMatrix NOOO de WebGL
+			var mvMatrix = mat4.create();
+			var pMatrix = mat4.create();
+
+			// Creamos la matriz de prespectiva
+			mat4.perspective(
+				pMatrix,
+				45,
+				gl.viewportWidth / gl.viewportHeight,
+				0.1,
+				100.0
+			)
+
+			// Transladamos
+
+			mat4.identity(mvMatrix) //limpia la matrix
+			mat4.translate(mvMatrix, mvMatrix, [0, 0, -7])
+
+
+			// Obtenemos las "referencias" a las variables del shader
+
+			/*
+				// posicion de los vertices
+				attribute vec3 aVertexPosition; 
+				//Movel-View Matrix para las tra
+				uniform mat4 uMVMatrix;
+				uniform mat4 uPMatrix;
+			 */
+
+			var indiceDeAVertexPosition = gl.getAttribLocation(shaderProgram, "aVertexPosition"); //shader, var, 
+
+			// Habilitamos los arreglos de tipo vertice
+			gl.enableVertexAttribArray(indiceDeAVertexPosition)
+
+			// Obtenemos las "referencias" a las variables del shader	
+			var indiceDeMVMatrix = gl.getUniformLocation(shaderProgram, "uMVMatrix") //shader, var
+
+			var indiceDePMatrix = gl.getUniformLocation(shaderProgram, "uPMatrix") //shader, var
+
+			// Enviamos la info a las variables en los shaders
+
+			gl.uniformMatrix4fv(indiceDeMVMatrix, false, mvMatrix)
+			gl.uniformMatrix4fv(indiceDePMatrix, false, pMatrix)
+
+			// Seleccionamos el buffer de vertices
+
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+
+			// Enviamos el buffer de vertices al vertex shader
+			gl.vertexAttribPointer(
+				indiceDeAVertexPosition,
+				vertexBuffer.itemSize,
+				gl.FLOAT,
+				false,
+				0, 0,
+			)
+			// Ultimo paso: DIBUJAR
+			gl.drawArrays(
+				gl.TRIANGLE_STRIP,
+				0,
+				vertexBuffer.numItems
+			)
+		}
+
+	</script>
+
+</head>
+
+<body>
+
+	<!-- Agregamos el canvas -->
+	<canvas id="webgl-canvas" width="800" height="600">
+		Tu navegador no es compatible!
+	</canvas>
+
+</body>
+
+</html>

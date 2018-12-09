@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+	<script type="text/javascript" src="index.js"></script>
+	<script type="text/javascript" src="persona.js"></script>
+
+	<style type="text/css">
+		button{
+		    background: #fafafa;
+		    border: 1px solid #e6e6e6;
+		    padding: 7px 15px;
+		    font-size: 1.2em;
+		    font-weight: lighter;
+		    text-transform: uppercase;
+		    margin: 15px;
+		    cursor: pointer;
+
+		}
+
+		button:hover{
+			background: rgba(80, 85, 102, 0.12)
+
+		}
+
+		label{
+		    margin: 15px;
+			font-size: 2.2em;
+    		font-family: "arial", sans-serif;
+    		color: #6d6e71;
+		}
+		input{
+			border: 1px solid #e6e6e6;
+			margin: 10px 0;
+		    height: 48px;
+		    font-size: 2em;
+		}	
+
+		.not-showing{
+
+			visibility: hidden;
+		}
+
+	</style>
+	<title>M_03</title>
+</head>
+<body>
+	<label for="txt_name">Name</label>
+	<input id="txt_name" type="text" name="Name" >
+	<br>
+	<label for="txt_last_name">Last Name</label>
+	<input id="txt_last_name" type="text" name="Description">
+	<br>
+	<label for="txt_phone">Phone</label>
+	<input id="txt_phone" type="numeric" name="Price">
+	<div>
+		<button id="btn_save">Save</button>	
+	</div>
+	<div>
+		<button id="btn_delete">Delete All</button>	
+	</div>
+
+	
+	<ul id="peopleList">
+
+	</ul>
+	
+
+
+	
+</body>
+</html>

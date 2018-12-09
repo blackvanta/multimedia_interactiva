@@ -1,0 +1,69 @@
+
+<html>
+<head>
+	<title>3.2 Colores</title>	
+	<script type="text/javascript" src="js/libs/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="js/libs/gl-matrix.js"></script>	
+	<script type="text/javascript" src="js/libs/webgl-utils.js"></script>
+	<script type="text/javascript" src="js/models/webglconfig.js"></script>
+	<script type="text/javascript" src="js/models/object3d.js"></script>
+	
+	<script id="shader-vs" type="x-shader/x-vertex">
+	    attribute vec3 aVertexPosition;
+		attribute vec4 aVertexColor;
+
+	    uniform mat4 uMVMatrix;
+	    uniform mat4 uPMatrix;
+
+		varying vec4 vColor;
+
+	    void main(void) {
+	        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+			
+			vColor = aVertexColor;
+			
+	    }
+	</script>
+	<script id="shader-fs" type="x-shader/x-fragment">
+	    precision highp float;    
+
+		varying vec4 vColor;
+		
+	    void main(void) {
+	        gl_FragColor = vColor;
+	    }
+	</script>
+	<script type="text/javascript">
+		var webGlConfig = null;
+		var cube = null;
+		$(document).ready(function() {
+			webGlConfig = new WebGLConfig($("#webgl-canvas")[0]);
+			
+			cube = Object3D.createCubeWithColor(webGlConfig.gl, webGlConfig.shaderProgram);
+			tick(0);
+		});
+
+		var deltaTime = 0;
+		var lastUpdateTime = 0;
+		function tick(time) {
+			time *= .001;
+			deltaTime = time - lastUpdateTime;
+			lastUpdateTime = time;
+			drawScene();
+			requestAnimFrame(tick);
+		}
+
+		function drawScene() {
+			webGlConfig.clear();
+			cube.rotation.x += 100 * deltaTime;
+			cube.rotation.y += 100 * deltaTime;
+			cube.draw();
+		}
+		
+	</script>
+
+</head>
+<body>
+	<canvas id="webgl-canvas" width="800" height="600">Navegador no compatible!</canvas>
+</body>
+</html>

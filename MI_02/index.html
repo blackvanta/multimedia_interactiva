@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="index.js"></script>
+	<script type="text/javascript" src="producto.js"></script>
+
+	<style type="text/css">
+		button{
+		    background: #fafafa;
+		    border: 1px solid #e6e6e6;
+		    padding: 7px 15px;
+		    font-size: 1.2em;
+		    font-weight: lighter;
+		    text-transform: uppercase;
+		    margin: 15px;
+		}
+		label{
+		    margin: 15px;
+			font-size: 2.2em;
+    		font-family: "arial", sans-serif;
+    		color: #6d6e71;
+		}
+		input{
+			border: 1px solid #e6e6e6;
+			margin: 10px 0;
+		}	
+
+	</style>
+	<title>M_02</title>
+</head>
+<body>
+	<label for="txt_nombre">Name</label>
+	<input id="txt_nombre" type="text" name="Name">
+	<br>
+	<label for="txt_nombre">Description</label>
+	<input id="txt_desc" type="text" name="Description">
+	<br>
+	<label for="txt_nombre">Price</label>
+	<input id="txt_precio" type="numeric" name="Price">
+	<div>
+		<button id="btn_save">Save</button>	
+	</div>
+	
+	<ul id="productList">
+
+	</ul>
+	
+</body>
+</html>
