@@ -39,7 +39,7 @@
 
 			cube = Object3D.createCubeWithColor(webGlConfig.gl, webGlConfig.shaderProgram);
 			// CON UN SOLO METODO SE DEBE DE PODER CAMBIAR EL COLOR DE LA FIGURA
-			cube.setColor({ r: 1.0, g: 0.0, b: 1.0, a: 1 })
+			cube.setColor({ r: 0.0, g: 1.0, b: 1.0, a: 1 })
 			tick(0);
 		});
 
@@ -65,7 +65,7 @@
 				
 			// else (cube.position.x  0)
 			// 	cube.position.x -= 1 * deltaTime;
-			// 	cube.draw();
+				cube.draw();
 		}
 
 	</script>
