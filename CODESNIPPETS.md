@@ -209,3 +209,31 @@ Object3D.createCubeWithColor = function(gl, shaderProgram) {
 	return object3D;
 }
 ```
+
+##Classes
+```
+CLASS.loader = function (){
+
+	this.variable = null;
+	this.otherObject = {
+		a: "",
+		b: "",
+		c: ""
+	}
+
+}
+
+CLASS.loader.prototype = {
+	constructor: CLASS.loader,
+	load: function(param1,param2,param3,param4 ){
+		var scope = this;
+		let parameters = param1 + param2 + param3 + param4
+
+	},
+	getOtherFunction: function(){
+		return this.otherObject
+	}
+
+}
+
+```

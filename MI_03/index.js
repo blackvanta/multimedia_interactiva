@@ -58,7 +58,7 @@ function saveFunction (persona) {
 }
 
 function readFuntion() {
- var persona = new Persona(
+		var persona = new Persona(
  			localStorage.getItem("name"),
 			localStorage.getItem("lastName"),
 			localStorage.getItem("phone")
